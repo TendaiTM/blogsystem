@@ -20,11 +20,11 @@ import {
   ApiBearerAuth 
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
-import { profilePictureConfig } from '../config/multer.config';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { AuthService } from './auth.service.js';
+import { RegisterDto } from './dto/register.dto.js';
+import { LoginDto } from './dto/login.dto.js';
+import { profilePictureConfig } from '../config/multer.config.js';
+import { JwtAuthGuard } from './jwt-auth.guard.js';
 
 
 @ApiTags('auth') // Group all auth endpoints under 'auth' tag

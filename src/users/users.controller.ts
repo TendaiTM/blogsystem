@@ -18,8 +18,8 @@ import {
   ApiParam,
   ApiBody 
 } from '@nestjs/swagger';
-import { UsersService } from './users.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UsersService } from './users.service.js';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 
 @ApiTags('users')
 @ApiBearerAuth('JWT-auth')

@@ -1,24 +1,15 @@
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { memoryStorage } from 'multer';
 
 // Configuration for blog post media (images and videos)
 export const blogPostMediaConfig = {
-  storage: diskStorage({
-    destination: './uploads/blog-posts', // Separate directory for blog post media
-    filename: (req, file, cb) => {
-      // Generate unique filename for blog post media
-      const randomName = uuidv4();
-      cb(null, `${randomName}${extname(file.originalname)}`);
-    },
-  }),
-  fileFilter: (req, file, cb) => {
+  storage: memoryStorage(),
+  fileFilter: (req: any, file: Express.Multer.File, cb: any) => {
     // Validate file types for blog posts (images and videos)
-    if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+    if (file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
       // Allow image files
       cb(null, true);
-    } else if (file.mimetype.match(/\/(mp4|webm|ogg|mov|avi)$/)) {
-      // Allow video files (expanded types)
+    } else if (file.mimetype.match(/\/(mp4|webm|ogg|mov|avi|mpeg)$/)) {
+      // Allow video files
       cb(null, true);
     } else {
       cb(new Error('Unsupported file type. Only images and videos are allowed.'), false);
@@ -31,18 +22,10 @@ export const blogPostMediaConfig = {
 
 // Configuration for profile pictures (images only)
 export const profilePictureConfig = {
-  storage: diskStorage({
-    destination: './uploads/profile-pictures', // Separate directory for profile pictures
-    filename: (req, file, callback) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      const ext = extname(file.originalname);
-      const filename = `profile-${uniqueSuffix}${ext}`;
-      callback(null, filename);
-    },
-  }),
-  fileFilter: (req, file, callback) => {
+  storage: memoryStorage(),
+  fileFilter: (req: any, file: Express.Multer.File, callback: any) => {
     // Only allow image files for profile pictures
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
+    if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
       return callback(new Error('Only image files are allowed for profile pictures!'), false);
     }
     callback(null, true);
@@ -54,14 +37,8 @@ export const profilePictureConfig = {
 
 // Generic configuration for any file type
 export const genericFileConfig = {
-  storage: diskStorage({
-    destination: './uploads/generic',
-    filename: (req, file, cb) => {
-      const randomName = uuidv4();
-      cb(null, `${randomName}${extname(file.originalname)}`);
-    },
-  }),
-  fileFilter: (req, file, cb) => {
+  storage: memoryStorage(),
+  fileFilter: (req: any, file: Express.Multer.File, cb: any) => {
     // Allow all file types for generic uploads
     cb(null, true);
   },

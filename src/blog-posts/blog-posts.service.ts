@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
-import { SupabaseService } from '../supabase/supabase.service';
-import { CreateBlogPostDto } from './dto/create-blog-post.dto';
+import { SupabaseService } from '../supabase/supabase.service.js';
+import { CreateBlogPostDto } from './dto/create-blog-post.dto.js';
 
 @Injectable()
 export class BlogPostsService {
