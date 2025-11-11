@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { AppModule } from './app.module.js';
+import { AppModule } from './app.module';
 import { join } from 'path';
 import * as express from 'express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
-let cachedApp: express.Express
+let cachedApp: any;
 
 async function bootstrapServer() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -62,7 +62,7 @@ async function bootstrapServer() {
   return app.getHttpAdapter().getInstance();
 }
 
-export default async function handler(req: express.Request, res: express.Response) {
+export default async function handler(req: any, res: any) {
   if (!cachedApp) {
     cachedApp = await bootstrapServer();
   }
