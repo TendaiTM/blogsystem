@@ -2,8 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
-import { join } from 'path';
-import * as express from 'express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 let cachedApp: any;
@@ -12,7 +10,7 @@ async function bootstrapServer() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
-    origin: 'http://localhost:3000', // Your Next.js frontend URL
+    origin: ['http://localhost:3000', 'https://blogsystem-sandy.vercel.app'], // Your Next.js frontend URL
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
@@ -40,6 +38,9 @@ async function bootstrapServer() {
       },
       'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
     )
+
+    .addServer('https://blogsystem-sandy.vercel.app', 'Production Server')
+    .addServer('http://localhost:3005', 'Local Development')
     .addTag('blog-posts', 'Blog post management endpoints')
     .addTag('comments', 'Comment management endpoints')
     .addTag('users', 'User management endpoints')
@@ -47,13 +48,28 @@ async function bootstrapServer() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
+
   SwaggerModule.setup('api-docs', app, document, {
     customSiteTitle: 'Blog API Documentation',
     swaggerOptions: {
       persistAuthorization: true,
       tagsSorter: 'alpha',
       operationsSorter: 'alpha',
+      docExpansion: 'none',
+      filter: true,
+      showRequestDuration: true,
     },
+    customCss: `
+      .swagger-ui .topbar { display: none; }
+      .swagger-ui .information-container { background: #fafafa; padding: 20px; }
+    `,
+    customJs: [
+      'https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js',
+      'https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-standalone-preset.js'
+    ],
+    customCssUrl: [
+      'https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css'
+    ],
   });
 
   console.log('📚 Swagger documentation available at: http://localhost:3005/api-docs');
