@@ -8,7 +8,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 let cachedApp: express.Express
 
-async function bootstrap() {
+async function bootstrapServer() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
@@ -22,11 +22,6 @@ async function bootstrap() {
       'X-API-Key'
     ],
   });
-
-  const uploadsPath = join(process.cwd(), 'uploads');
-  console.log('📁 Serving static files from:', uploadsPath);
-
-  app.use('/uploads', express.static(uploadsPath));
 
   app.useGlobalPipes(new ValidationPipe());
 
@@ -63,9 +58,24 @@ async function bootstrap() {
 
   console.log('📚 Swagger documentation available at: http://localhost:3005/api-docs');
 
-  await app.listen(process.env.PORT ?? 3005);
-  console.log('Application is running on: http://localhost:3005');
-  
+  await app.init();
+  return app.getHttpAdapter().getInstance();
 }
 
-bootstrap();
+export default async function handler(req: express.Request, res: express.Response) {
+  if (!cachedApp) {
+    cachedApp = await bootstrapServer();
+  }
+  return cachedApp(req, res);
+}
+
+// Local development - only run if not in Vercel environment
+if (!process.env.VERCEL) {
+  bootstrapServer().then(app => {
+    const port = process.env.PORT || 3005;
+    app.listen(port, () => {
+      console.log(`🚀 Application is running on: http://localhost:${port}`);
+      console.log(`📚 Swagger docs: http://localhost:${port}/api-docs`);
+    });
+  });
+}
