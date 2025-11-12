@@ -10,7 +10,7 @@ async function bootstrapServer() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://blogsystemfrontend.vercel.app/'], // Your Next.js frontend URL
+    origin: ['http://localhost:3000', 'https://blogsystemfrontend.vercel.app'], // Your Next.js frontend URL
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
