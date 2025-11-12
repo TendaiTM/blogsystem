@@ -222,6 +222,31 @@ export class BlogPostsService {
     }
   }
 
+  async findByCategory(category: string): Promise<any[]> {
+    try {
+      const { data: posts, error } = await this.supabaseService
+        .getClient()
+        .from('blog_posts')
+        .select(`
+          *,
+          author:users(id, name, surname, username, email)
+          `)
+          .eq('category', category)
+          .order('created_at', {ascending: false});
+
+      if (error) {
+        throw new BadRequestException(`Falied to fetch posts by category: ${error.message}`);
+      }
+
+      return posts || [];
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException('Failed to fetch category blog posts')
+    }
+  }
+
   async uploadFilesToSupabase(files: Express.Multer.File[]): Promise<{ imageUrls: string[], videoUrls: string[] }> {
     const supabaseClient = this.supabaseService.getClient();
     const imageUrls: string[] = [];

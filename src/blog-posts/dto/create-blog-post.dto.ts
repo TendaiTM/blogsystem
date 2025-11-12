@@ -39,4 +39,13 @@ export class CreateBlogPostDto {
   @IsOptional()
   @IsArray()
   video_urls?: string[];
+
+  @ApiPropertyOptional({
+    description: 'Category of the post',
+    example: 'entertainment',
+    type: String,
+  })
+  @IsOptional()
+  @IsArray()
+  category: string[];
 }

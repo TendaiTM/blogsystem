@@ -306,6 +306,29 @@ export class BlogPostsController {
     return this.blogPostsService.update(id, updateData, req.user.id);
   }
 
+  @Get('category/:category')
+  @ApiOperation({ 
+    summary: 'Get blog posts by category',
+    description: 'Retrieve all blog posts filtered by category'
+  })
+  @ApiParam({ 
+    name: 'category', 
+    description: 'Category name to filter by', 
+    type: String,
+    example: 'technology'
+  })
+  @ApiResponse({ 
+    status: HttpStatus.OK, 
+    description: 'Returns blog posts in the specified category' 
+  })
+  @ApiResponse({ 
+    status: HttpStatus.BAD_REQUEST, 
+    description: 'Invalid category parameter' 
+  })
+  async findByCategory(@Param('category') category: string) {
+    return this.blogPostsService.findByCategory(category);
+  }
+
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
